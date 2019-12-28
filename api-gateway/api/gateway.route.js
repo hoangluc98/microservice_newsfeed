@@ -1,7 +1,6 @@
-const express = require('express')
-
 const controller = require('./gateway.controller')
 const auth = require('./gateway.middleware')
+const express = require('express')
 
 const router = express.Router()
 
