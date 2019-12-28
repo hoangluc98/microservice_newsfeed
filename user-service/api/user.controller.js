@@ -48,7 +48,7 @@ userController.create = async (req, res) => {
 
 userController.update = async (req, res) => {
 	const userId = req.body.userId
-	if((!req.body.user.role.includes('admin')) && (userId.toString() !== req.body.user._id.toString()))
+	if((!req.body.user.role.includes('admin')) && (userId !== req.body.user._id))
 		return res.status(500).json('Update failed')
 
 	try{
@@ -62,7 +62,11 @@ userController.update = async (req, res) => {
 }
 
 userController.delete = (req, res) => {
-	User.findByIdAndDelete({_id: req.body.id})
+	const userId = req.body.userId
+	if(!req.body.user.role.includes('admin') && (req.body.user._id !== req.body.userId))
+		res.status(500).json('Can\'t delete')
+		
+	User.findByIdAndDelete({_id: userId})
 		.exec()
 		.then(result => {
 			res.status(201).json('Delete successful')

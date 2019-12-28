@@ -8,11 +8,10 @@ commentController.list = async (req, res) => {
 	const articleId = req.body.articleId
 
 	try {
-		let comments
 		if(articleId)
-            comments = await Comment.find({articleId: articleId}, select).limit(10).skip(10*(page-1))
+			let comments = await Comment.find({articleId: articleId}, select).limit(10).skip(10*(page-1))
         else
-            comments = await Comment.find({}, select).limit(10).skip(10*(page-1))
+			let comments = await Comment.find({}, select).limit(10).skip(10*(page-1))
 
 		res.status(200).json({
 			list: comments,
@@ -36,7 +35,6 @@ commentController.item = (req, res) => {
 }
 
 commentController.create = async (req, res) => {
-	// req.body.userId = req.user._id
 	if(!req.body.content && !req.body.image)
 		return res.status(500).json('Created comment failed')
 
@@ -51,13 +49,11 @@ commentController.create = async (req, res) => {
 }
 
 commentController.update = async (req, res) => {
-	// if((req.user.role === 'user') && (req.body.userId.toString() !== req.user._id.toString()))
-	// 	return res.status(500).json('No comment updates.')
+	if(!req.body.user.role.includes('admin') && (req.body.user._id !== req.body.userId))
+        res.status(500).json('Can\'t update')
 
 	try {
 		let commentId = req.body.commentId
-		delete req.body.userId
-		delete req.body.commentId
 		await Comment.findOneAndUpdate({_id: commentId}, req.body)
 		let result = await Comment.findOne({_id: commentId})
 
@@ -68,9 +64,12 @@ commentController.update = async (req, res) => {
 }
 
 commentController.delete = async (req, res) => {
-	const { id, articleId, userIdComment, userIdArticle } = req.body
+	const { cmtId, articleId, userCmtId, userArtId } = req.body
 
-	Comment.findOneAndRemove({_id: id})
+	if(!req.body.user.role.includes('admin') && (req.body.user._id !== userArtId) && (req.body.user._id !== userCmtId))
+        res.status(500).json('Can\'t update')
+
+	Comment.findOneAndRemove({_id: cmtId})
 		.exec()
 		.then(result => {
 			res.status(204).json('Delete successful')

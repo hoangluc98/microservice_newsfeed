@@ -10,30 +10,20 @@ let groupUserSchema = new mongoose.Schema({
 		required: true
 	},
 	permission: {
-        users:{
-            type: Array,
-            required: true,
-            default: []
+        user:{
+            type: Array
         },
-        articles:{
-            type: Array,
-            required: true,
-            default: []
+        article:{
+            type: Array
         },
-        comments:{
-            type: Array,
-            required: true,
-            default: []
+        comment:{
+            type: Array
         },
-        statisticals:{
-            type: Array,
-            required: true,
-            default: []
+        statistical:{
+            type: Array
         },
-        groupUsers:{
-            type: Array,
-            required: true,
-            default: []
+        groupUser:{
+            type: Array
         }
     },	
 	created_At_: {

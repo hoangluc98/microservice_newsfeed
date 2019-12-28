@@ -46,7 +46,7 @@ module.exports.authenticate = async (req, res, next) => {
 		
 		for(i = 0; i < permission.length; i++){
 			permission = permission[i][urlReq]
-			if(permission.includes(pathName)) 
+			if(permission && permission.includes(pathName)) 
 				return next()
 			
 			if(i === (permission.length - 1))

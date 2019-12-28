@@ -20,8 +20,12 @@ authController.postLogin = async (req, res) => {
 	try {
 		let permissions = []
 		let user = await User.findByCredentials(email, password)
-		for(i = 0; i < user.role.length; i++)
-			permissions[i] = (await GroupUser.findOne({name: user.role[i]})).permission
+
+		if(user.role.includes('admin'))
+			permissions[0] = (await GroupUser.findOne({name: 'admin'})).permission
+		else
+			for(i = 0; i < user.role.length ; i++)
+				permissions[i] = (await GroupUser.findOne({name: user.role[i]})).permission
 
 		let userData = {
 			_id: user._id,
@@ -31,10 +35,10 @@ authController.postLogin = async (req, res) => {
 		}
 		const accessToken = await user.generateToken(userData, accessTokenSecret, accessTokenLife) 
 		const refreshToken = await user.generateToken(userData, refreshTokenSecret, refreshTokenLife)
-		
+
 		// Sets: add userId in order to statistic the number of access user
 		redisClient.sadd('userAccess', user._id.toString())
-		// Set key/value pairs for refreshToen and logout
+		// Set key/value pairs for refreshToen or logout
 		redisClient.setex(refreshToken, 31536000, accessToken)
 	
 		return res.status(200).json({
