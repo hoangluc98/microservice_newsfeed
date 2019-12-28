@@ -8,10 +8,11 @@ articleController.list = async (req, res) => {
     const page = parseInt(req.query.page) || 1
     const userId = req.body.userId
     try {
+        let result
         if(userId)
-            const result = await Article.find({userId: userId}, select).limit(10).skip(10*(page-1))
+            result = await Article.find({userId: userId}, select).limit(10).skip(10*(page-1))
         else
-            const result = await Article.find({}, select).limit(10).skip(10*(page-1))
+            result = await Article.find({}, select).limit(10).skip(10*(page-1))
         
         res.status(200).json({
             list: result,
