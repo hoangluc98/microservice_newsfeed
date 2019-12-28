@@ -37,6 +37,7 @@ articleController.create = async (req, res) => {
 	if(!req.body.content)
 		return res.status(500).json('Created article failed')
 
+    req.body.userId = req.body.user._id
     req.body.created_At_ = Date.now()  
     Article.create(req.body)
         .then(result => {
@@ -54,8 +55,8 @@ articleController.update = async (req, res) => {
 
     try {
         await Article.findOneAndUpdate({_id: articleId}, req.body)
+        
         let result = await Article.findOne({_id: articleId})
-
         res.status(200).json(result)
     } catch (err) {
         res.status(500).json({error: err})

@@ -50,9 +50,9 @@ userController.update = async (req, res) => {
 	const userId = req.body.userId
 	if((!req.body.user.role.includes('admin')) && (userId !== req.body.user._id))
 		return res.status(500).json('Update failed')
-
+		
 	try{
-		await User.findByIdAndUpdate({_id: userId}, req.body)
+		await User.findOneAndUpdate({_id: userId}, req.body)
 
 		let result = await User.findOne({_id: userId}, select)
 		res.status(201).json(result)
