@@ -32,9 +32,9 @@ userController.item = (req, res) => {
 }
 
 userController.create = async (req, res) => {
-	const password = req.body.password
 	const role = req.body.role
-	if(!req.body.name || !req.body.email || !password || !role || !req.body.status)
+	req.body.password = req.body.password.toLowerCase()
+	if(!req.body.name || !req.body.email || !req.body.password || !role || !req.body.status)
 		return res.status(500).json('Created failed')
 
 	req.body.created_At_ = Date.now()
@@ -63,6 +63,7 @@ userController.update = async (req, res) => {
 
 userController.delete = (req, res) => {
 	const userId = req.body.userId
+	
 	if(!req.body.user.role.includes('admin') && (req.body.user._id !== req.body.userId))
 		res.status(500).json('Can\'t delete')
 		
