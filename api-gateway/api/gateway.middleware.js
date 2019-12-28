@@ -5,8 +5,6 @@ const config = require('../config/config')
 
 const accessTokenSecret = config.ACCESS_TOKEN_SECRET || "access-token-secret"
 
-
-
 module.exports.requireAuth = async (req, res, next) => {
 	const tokenHeader = req.headers['authorization']
 	const url_parts = url.parse(req.url).pathname
